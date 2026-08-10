@@ -332,7 +332,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   dummyRenderer: {fileID: 344200608}
-  respawnTime: 0.25
+  respawnTime: 3
 --- !u!212 &344200608
 SpriteRenderer:
   serializedVersion: 2
