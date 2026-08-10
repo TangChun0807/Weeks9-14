@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,33 +7,37 @@ public class TrainingDummy : MonoBehaviour
     public int maxHealth = 3;
     public int currentHealth;
 
-    // UnityEvent that happens whenever this dummy is hit.
-    // Different dummies can have different responses in the Inspector.
     public UnityEvent onHit;
+
+    public SpriteRenderer dummyRenderer;
+
+    public float respawnTime = 0.25f;
+
+    private Coroutine respawnCoroutine;
 
     void Start()
     {
-        // Give the dummy full health when the game begins.
+        // Start the dummy at full health
         currentHealth = maxHealth;
     }
 
     public void TakeDamage()
     {
-        // Do not take more damage after reaching zero health.
+        // Do not take damage while the dummy is already dead
         if (currentHealth <= 0)
         {
             return;
         }
 
-        // Remove one health when attacked.
+        // Remove one health
         currentHealth -= 1;
 
         Debug.Log(gameObject.name + " Health: " + currentHealth);
 
-        // Run the functions connected to On Hit in the Inspector.
+        // Call all On Hit responses in the Inspector
         onHit.Invoke();
 
-        // Check whether the dummy has died.
+        // Start respawning when health reaches zero
         if (currentHealth <= 0)
         {
             Die();
@@ -41,7 +46,31 @@ public class TrainingDummy : MonoBehaviour
 
     public void Die()
     {
-        // Disable the dummy when its health reaches zero.
-        gameObject.SetActive(false);
+        // Stop an old respawn coroutine if one is already running
+        if (respawnCoroutine != null)
+        {
+            StopCoroutine(respawnCoroutine);
+        }
+
+        // Start the respawn coroutine
+        respawnCoroutine = StartCoroutine(Respawn());
+    }
+
+    IEnumerator Respawn()
+    {
+        // Hide the dummy
+        dummyRenderer.enabled = false;
+
+        // Wait before bringing the dummy back
+        yield return new WaitForSeconds(respawnTime);
+
+        // Reset health
+        currentHealth = maxHealth;
+
+        // Show the dummy again
+        dummyRenderer.enabled = true;
+
+        // The coroutine is finished
+        respawnCoroutine = null;
     }
 }
