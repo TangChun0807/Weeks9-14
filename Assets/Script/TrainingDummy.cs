@@ -11,7 +11,7 @@ public class TrainingDummy : MonoBehaviour
 
     public SpriteRenderer dummyRenderer;
 
-    public float respawnTime = 0.25f;
+    public float respawnTime = 3f;
 
     private Coroutine respawnCoroutine;
 
